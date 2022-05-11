@@ -1,14 +1,18 @@
+import 'package:dpma/controller/auth_store.dart';
 import 'package:dpma/controller/home_store.dart';
+import 'package:dpma/main.dart';
 import 'package:dpma/model/doctor.dart';
 import 'package:dpma/view/details_screen.dart';
 import 'package:dpma/view/widgets/doctors_list.dart';
 import 'package:dpma/view/widgets/doctors_tile.dart';
+import 'package:dpma/view/widgets/fade_animation.dart';
 import 'package:dpma/view/widgets/lottie/lottie_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants.dart' as _constants;
 import '../injector.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +25,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final AuthStore _authStore = locator.get<AuthStore>();
   final HomeStore _homeStore = locator.get<HomeStore>();
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
+
   bool isGrid = false;
 
   @override
@@ -33,29 +40,44 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       drawer: Drawer(
-        backgroundColor: const Color.fromRGBO(250, 250, 200, 1.0),
+        backgroundColor: _constants.primaryColorDark,
         child: SafeArea(
           child: ListView(
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
-              Container(
-                height: 15.h,
-                padding: const EdgeInsets.symmetric(vertical: 10),
+              SizedBox(
+                height: 10.h,
                 child: Center(
                     child: Image.asset(
-                      'assets/tend_logo.png',
-                      width: 20.w,
-                    )),
+                  'assets/bima-logo.png',
+                  fit: BoxFit.fitHeight,
+                )),
               ),
               const Divider(
                 color: Colors.white,
               ),
               ListTile(
                 tileColor: Colors.white,
-                title: const Text('Logout'),
-                onTap: () async {},
+                title: Text(
+                  'Logout',
+                  style: GoogleFonts.robotoCondensed(
+                      textStyle: const TextStyle(
+                          color: _constants.primaryColorDark,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
+                ),
+                onTap: () async {
+                  await _authStore.logout();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute<dynamic>(
+                        builder: (BuildContext context) => const Initialize(),
+                      ),
+                      (route) => false);
+                },
               ),
             ],
           ),
@@ -64,10 +86,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         elevation: 2,
         backgroundColor: Colors.white,
-        leading: const Icon(
-          Icons.view_headline,
-          color: Color.fromRGBO(47, 87, 159, 1),
-        ),
+        leading: IconButton(
+            onPressed: () {
+              _key.currentState!.openDrawer();
+            },
+            icon: const Icon(
+              Icons.view_headline,
+              color: Color.fromRGBO(47, 87, 159, 1),
+            )),
         title: Text(
           'BIMA DOCTOR',
           style: GoogleFonts.robotoCondensed(
@@ -91,15 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Observer(
               builder: (BuildContext context) {
                 switch (_homeStore.state) {
-                  case StoreState.loading:
+                  case HomeStoreState.loading:
                     return const LottieWidget(
                       lottieType: 'loading',
                     );
-                  case StoreState.loaded:
+                  case HomeStoreState.loaded:
                     if (_homeStore.doctorsList.isEmpty) {
                       return const Text('No doctors available');
                     }
-
                     return (isGrid)
                         ? loadGrid(context, _homeStore.doctorsList)
                         : loadList(context, _homeStore.doctorsList);
@@ -113,40 +138,45 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   loadGrid(BuildContext context, List<Doctor> doctorsList) {
-    return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 1.0,
-          mainAxisSpacing: 1.0,
-        ),
-        itemCount: doctorsList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return DoctorsTile(
-              doctor: doctorsList[index],
-              onClick: (selectedDoctor) {
-                Navigator.of(context)
-                    .push(MaterialPageRoute<dynamic>(
-                        builder: (BuildContext context) =>
-                            DetailsScreen(doctor: selectedDoctor)))
-                    .then((value) => _homeStore.getDoctors());
-              });
-        });
+    return FadeAnimation(
+      delay: 2000,
+      child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 1.0,
+            mainAxisSpacing: 1.0,
+          ),
+          itemCount: doctorsList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return DoctorsTile(
+                doctor: doctorsList[index],
+                onClick: (selectedDoctor) {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute<dynamic>(
+                          builder: (BuildContext context) =>
+                              DetailsScreen(doctor: selectedDoctor)))
+                      .then((value) => _homeStore.getDoctors());
+                });
+          }),
+    );
   }
 
   loadList(BuildContext context, List<Doctor> doctorsList) {
-    return ListView.builder(
-        itemCount: doctorsList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return DoctorsList(
-              doctor: doctorsList[index],
-              onClick: (selectedDoctor) {
-                Navigator.of(context)
-                    .push(MaterialPageRoute<dynamic>(
-                        builder: (BuildContext context) =>
-                            DetailsScreen(doctor: selectedDoctor)))
-                    .then((value) => _homeStore.getDoctors());
-              });
-        });
+    return FadeAnimation(
+      delay: 1000,
+      child: ListView.builder(
+          itemCount: doctorsList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return DoctorsList(
+                doctor: doctorsList[index],
+                onClick: (selectedDoctor) {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute<dynamic>(
+                          builder: (BuildContext context) =>
+                              DetailsScreen(doctor: selectedDoctor)))
+                      .then((value) => _homeStore.getDoctors());
+                });
+          }),
+    );
   }
-
 }

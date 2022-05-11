@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+const String title = 'DPMA';
 
 const Color primaryColor = Color.fromRGBO(1, 94, 203, 1);
 const Color primaryColorDark = Color.fromRGBO(47, 87, 159, 1);

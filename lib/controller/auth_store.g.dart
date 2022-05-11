@@ -40,6 +40,22 @@ mixin _$AuthStore on AuthStoreBase, Store {
     return _$loginAsyncAction.run(() => super.login(contact));
   }
 
+  late final _$verifyOtpAsyncAction =
+      AsyncAction('AuthStoreBase.verifyOtp', context: context);
+
+  @override
+  Future<bool> verifyOtp(String otp) {
+    return _$verifyOtpAsyncAction.run(() => super.verifyOtp(otp));
+  }
+
+  late final _$logoutAsyncAction =
+      AsyncAction('AuthStoreBase.logout', context: context);
+
+  @override
+  Future<void> logout() {
+    return _$logoutAsyncAction.run(() => super.logout());
+  }
+
   late final _$AuthStoreBaseActionController =
       ActionController(name: 'AuthStoreBase', context: context);
 

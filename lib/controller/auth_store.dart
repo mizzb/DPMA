@@ -6,7 +6,7 @@ part 'auth_store.g.dart';
 
 class AuthStore = AuthStoreBase with _$AuthStore;
 
-enum StoreState { login, signup }
+enum StoreState { login, otp }
 
 abstract class AuthStoreBase with Store {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -16,10 +16,12 @@ abstract class AuthStoreBase with Store {
   @observable
   String? _contactNumber;
 
+  String? _verificationId;
+
   @computed
   StoreState get state {
     if (_contactNumber != null) {
-      return StoreState.signup;
+      return StoreState.otp;
     } else {
       return StoreState.login;
     }
@@ -41,7 +43,14 @@ abstract class AuthStoreBase with Store {
           }
         },
         codeSent: (String verificationId, int? resendToken) {
-          _contactNumber = contact;
+          _verificationId = verificationId;
+          if (_verificationId != null) {
+            _contactNumber = contact;
+          } else {
+            if (kDebugMode) {
+              print("Verification id failed");
+            }
+          }
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           if (kDebugMode) {
@@ -55,6 +64,28 @@ abstract class AuthStoreBase with Store {
       }
     }
     return _contactNumber;
+  }
+
+  @action
+  Future<bool> verifyOtp(String otp) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId!, smsCode: otp);
+    try {
+      UserCredential _resp = await _auth.signInWithCredential(credential);
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      return false;
+    }
+  }
+
+  @action
+  Future<void> logout() async {
+    _contactNumber = null;
+    _verificationId = null;
+    return await _auth.signOut();
   }
 
   @action

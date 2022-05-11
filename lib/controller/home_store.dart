@@ -11,7 +11,7 @@ part 'home_store.g.dart';
 
 class HomeStore = HomeStoreBase with _$HomeStore;
 
-enum StoreState { loading, loaded }
+enum HomeStoreState { loading, loaded }
 
 abstract class HomeStoreBase with Store {
   HomeStoreBase();
@@ -32,12 +32,12 @@ abstract class HomeStoreBase with Store {
   ObservableFuture<bool> _DBFlag = ObservableFuture(Future<bool>(() => false));
 
   @computed
-  StoreState get state {
+  HomeStoreState get state {
     if (_doctors.status == FutureStatus.pending ||
         _DBFlag.status == FutureStatus.pending) {
-      return StoreState.loading;
+      return HomeStoreState.loading;
     } else {
-      return StoreState.loaded;
+      return HomeStoreState.loaded;
     }
   }
 

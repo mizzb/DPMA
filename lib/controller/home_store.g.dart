@@ -9,12 +9,13 @@ part of 'home_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HomeStore on HomeStoreBase, Store {
-  Computed<StoreState>? _$stateComputed;
+  Computed<HomeStoreState>? _$stateComputed;
 
   @override
-  StoreState get state => (_$stateComputed ??=
-          Computed<StoreState>(() => super.state, name: 'HomeStoreBase.state'))
-      .value;
+  HomeStoreState get state =>
+      (_$stateComputed ??= Computed<HomeStoreState>(() => super.state,
+              name: 'HomeStoreBase.state'))
+          .value;
 
   late final _$doctorsListAtom =
       Atom(name: 'HomeStoreBase.doctorsList', context: context);

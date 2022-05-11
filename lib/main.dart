@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants.dart' as _constants;
 import 'injector.dart';
 import 'model/doctor.dart';
 
@@ -18,7 +19,6 @@ Future<void> main() async {
   Hive.init(documentDirectory.path);
   Hive.registerAdapter(DoctorAdapter());
   initialize();
-
   runApp(const DoctorsApp());
 }
 
@@ -38,7 +38,8 @@ class _DoctorsAppState extends State<DoctorsApp> {
       builder: (BuildContext context, Orientation orientation,
           DeviceType deviceType) {
         return const MaterialApp(
-          title: 'DPMA',
+          debugShowCheckedModeBanner: false,
+          title: _constants.title,
           home: Initialize(),
         );
       },
@@ -62,18 +63,13 @@ class _InitializeState extends State<Initialize> {
     checkUserAuth(context);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   checkUserAuth(context) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute<dynamic>(
-              builder: (BuildContext context) => const LoginScreen(),
+              builder: (BuildContext context) =>  const LoginScreen(),
             ),
             (route) => false);
       } else {

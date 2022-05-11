@@ -3,12 +3,16 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 
 class FadeAnimation extends StatefulWidget {
-  final delay;
-  final child;
-  final isHorizontal;
+  final int delay;
+  final Widget child;
+  final bool isHorizontal;
 
-   const FadeAnimation(
-      {int? this.delay, Widget? this.child, this.isHorizontal = false});
+  const FadeAnimation(
+      {Key? key,
+      required this.delay,
+      required this.child,
+      this.isHorizontal = false})
+      : super(key: key);
 
   @override
   _FadeAnimationState createState() => _FadeAnimationState();
@@ -23,7 +27,7 @@ class _FadeAnimationState extends State<FadeAnimation>
   @override
   void initState() {
     _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
+        vsync: this, duration: const Duration(milliseconds: 1000));
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: _animationController, curve: Curves.fastLinearToSlowEaseIn))

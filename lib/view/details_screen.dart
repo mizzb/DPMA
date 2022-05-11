@@ -71,20 +71,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
       ),
       backgroundColor: const Color.fromRGBO(47, 87, 159, 1),
       body: SafeArea(
-        child: Stack(
-          children: [
-            DoctorDetailsBG(
-              imageLink: widget.doctor.profilePic!,
-              context: context,
-            ),
-            buildDetails()
-          ],
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              DoctorDetailsBG(
+                imageLink: widget.doctor.profilePic!,
+                context: context,
+              ),
+              buildDetails()
+            ],
+          ),
         ),
       ),
     );
