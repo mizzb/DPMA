@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              Container(
                 height: 25.h,
                 width: 80.w,
                 child: IntlPhoneField(
@@ -204,7 +204,22 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        SizedBox(height: 5.h),
+        SizedBox(height: 4.h),
+        FadeAnimation(
+          delay: 600,
+          child: Center(
+            child: Text(
+              _constants.smsSendText,
+              maxLines: 2,
+              style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: _constants.colorAccent,
+                    fontSize: 12,
+                  )),
+            ),
+          ),
+        ),
+        SizedBox(height: 1.h,),
         FadeAnimation(
           delay: 600,
           child: AuthButton(
@@ -218,21 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               }),
         ),
-        SizedBox(height: 2.h),
-        FadeAnimation(
-          delay: 600,
-          child: Center(
-            child: Text(
-              _constants.smsSendText,
-              maxLines: 2,
-              style: GoogleFonts.roboto(
-                  textStyle: const TextStyle(
-                color: _constants.colorAccent,
-                fontSize: 12,
-              )),
-            ),
-          ),
-        ),
+
       ],
     );
   }
