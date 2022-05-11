@@ -126,7 +126,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 }
               },
               child: Text(
-                'UPDATE IMAGE',
+                _constants.updateImgText,
                 style: GoogleFonts.robotoCondensed(
                     textStyle: const TextStyle(color: _constants.colorAccent)),
               ),
@@ -165,7 +165,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             builder: (BuildContext context) {
               switch (_homeStore.state) {
                 case HomeStoreState.loading:
-                  return const LottieWidget(lottieType: 'loading');
+                  return const LottieWidget(lottieType: _constants.lottieLoad);
                 case HomeStoreState.loaded:
                   return buildDoctorsDetails();
               }

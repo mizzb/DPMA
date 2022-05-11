@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:dpma/view/home_screen.dart';
 import 'package:dpma/view/login_screen.dart';
 import 'package:dpma/view/widgets/lottie/lottie_widget.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
+
 import '../constants.dart' as _constants;
 import 'injector.dart';
 import 'model/doctor.dart';
@@ -16,8 +16,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final documentDirectory = await getApplicationDocumentsDirectory();
-  // Obtain a list of the available cameras on the device.
-  final cameras = await availableCameras();
   Hive.init(documentDirectory.path);
   Hive.registerAdapter(DoctorAdapter());
   initialize();
@@ -25,7 +23,7 @@ Future<void> main() async {
 }
 
 class DoctorsApp extends StatefulWidget {
-  const DoctorsApp( {Key? key}) : super(key: key);
+  const DoctorsApp({Key? key}) : super(key: key);
 
   @override
   _DoctorsAppState createState() {
@@ -71,7 +69,7 @@ class _InitializeState extends State<Initialize> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute<dynamic>(
-              builder: (BuildContext context) =>  const LoginScreen(),
+              builder: (BuildContext context) => const LoginScreen(),
             ),
             (route) => false);
       } else {
@@ -90,7 +88,7 @@ class _InitializeState extends State<Initialize> {
     return const Scaffold(
       body: Center(
         child: LottieWidget(
-          lottieType: 'loading',
+          lottieType: _constants.lottieLoad,
         ),
       ),
     );

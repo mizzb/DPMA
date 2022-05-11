@@ -39,4 +39,6 @@ const String yearText = 'Year';
 const String bloodText = 'Blood Group';
 const String heightText = 'Height';
 const String weightText = 'Weight';
+const String updateImgText = 'Update Image';
+const String privacyText = 'I agree to the <color>Terms Of Use</color> and <color>Privacy Policy</color>';
 

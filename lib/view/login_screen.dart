@@ -2,6 +2,7 @@ import 'package:dpma/controller/auth_store.dart';
 import 'package:dpma/injector.dart';
 import 'package:dpma/view/home_screen.dart';
 import 'package:dpma/view/widgets/auth_button.dart';
+import 'package:dpma/view/widgets/auth_header.dart';
 import 'package:dpma/view/widgets/fade_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -69,10 +70,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Widget field({FocusNode? focus,
-    FocusNode? next,
-    bool autofocus = false,
-    required TextEditingController ctrl}) {
+  Widget field(
+      {FocusNode? focus,
+      FocusNode? next,
+      bool autofocus = false,
+      required TextEditingController ctrl}) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.black.withOpacity(0.2),
@@ -225,9 +227,9 @@ class _LoginScreenState extends State<LoginScreen> {
               maxLines: 2,
               style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: _constants.colorAccent,
-                    fontSize: 12,
-                  )),
+                color: _constants.colorAccent,
+                fontSize: 12,
+              )),
             ),
           ),
         ),
@@ -280,9 +282,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 maxLines: 2,
                 style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
-                      color: _constants.colorAccent,
-                      fontSize: 12,
-                    )),
+                  color: Colors.white,
+                  fontSize: 12,
+                )),
               ),
             ),
           ),
@@ -314,9 +316,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             context,
                             MaterialPageRoute<dynamic>(
                               builder: (BuildContext context) =>
-                              const HomeScreen(),
+                                  const HomeScreen(),
                             ),
-                                (route) => false);
+                            (route) => false);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Login failed")));
@@ -328,7 +330,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content:
-                        Text("Please agree to the terms and condition")));
+                            Text("Please agree to the terms and condition")));
                   }
                 }),
           ),
@@ -351,9 +353,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               StyledText(
-                text: 'I agree to the <color>Terms Of Use</color> and <color>Privacy Policy</color>',
+                text: _constants.privacyText,
                 tags: {
-                  'color': StyledTextTag(style: const TextStyle(color: _constants.colorAccent))
+                  'color': StyledTextTag(
+                      style: const TextStyle(color: _constants.colorAccent))
                 },
                 style: GoogleFonts.roboto(
                     textStyle: const TextStyle(color: Colors.white)),
@@ -378,32 +381,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 'GO BACK',
                 style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
-                      color: _constants.colorAccent,
-                      fontSize: 12,
-                    )),
+                  color: Colors.white,
+                  fontSize: 15,
+                )),
               ),
             ),
           )
         ]);
-  }
-}
-
-class AuthHeader extends StatelessWidget {
-  final String header;
-
-  const AuthHeader({
-    Key? key,
-    required this.header,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      header,
-      maxLines: 1,
-      style: GoogleFonts.robotoCondensed(
-          textStyle: const TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-    );
   }
 }
