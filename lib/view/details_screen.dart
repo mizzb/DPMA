@@ -1,10 +1,18 @@
+import 'dart:io';
+
 import 'package:dpma/controller/home_store.dart';
 import 'package:dpma/model/doctor.dart';
+import 'package:dpma/view/widgets/auth_button.dart';
+import 'package:dpma/view/widgets/doctors_details_bg.dart';
+import 'package:dpma/view/widgets/lottie/lottie_widget.dart';
+import 'package:dpma/view/widgets/text_input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants.dart' as _constants;
 import '../injector.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -19,8 +27,10 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  bool isEdit = false;
+  bool _isEdit = false;
   final HomeStore _homeStore = locator.get<HomeStore>();
+  late File _pickedImage;
+  late dynamic _profilePic;
 
   final TextEditingController _firstNameCtrl = TextEditingController();
   final TextEditingController _lastNameCtrl = TextEditingController();
@@ -40,7 +50,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     _firstNameCtrl.text = widget.doctor.firstName!;
     _lastNameCtrl.text = widget.doctor.lastName!;
     _contactCtrl.text = widget.doctor.primaryContactNo!;
-
+    _profilePic = widget.doctor.profilePic!;
     _dayCtrl.text = (widget.doctor.day != null) ? widget.doctor.day! : '';
     _monthCtrl.text = (widget.doctor.month != null) ? widget.doctor.month! : '';
     _yearCtrl.text = (widget.doctor.year != null) ? widget.doctor.year! : '';
@@ -61,7 +71,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     _dayCtrl.dispose();
     _monthCtrl.dispose();
     _yearCtrl.dispose();
-
     _bloodCtrl.dispose();
     _heightCtrl.dispose();
     _weightCtrl.dispose();
@@ -76,14 +85,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
       ),
-      backgroundColor: const Color.fromRGBO(47, 87, 159, 1),
+      backgroundColor: _constants.primaryColorDark,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(
             children: [
               DoctorDetailsBG(
-                imageLink: widget.doctor.profilePic!,
-                context: context,
+                imageLink: _profilePic,
+                ctxt: context,
               ),
               buildDetails()
             ],
@@ -93,17 +102,36 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  SizedBox buildDetails() {
-    return SizedBox(
-      width: 100.w,
+  Widget buildDetails() {
+    return Container(
+      padding: EdgeInsets.all(2.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             height: 10.h + 20.w,
           ),
+          if (_isEdit)
+            GestureDetector(
+              onTap: () async {
+                var res =
+                    await ImagePicker().pickImage(source: ImageSource.camera);
+                if (res != null) {
+                  _pickedImage = File(res.path);
+                  setState(() {
+                    _profilePic = _pickedImage;
+                  });
+                }
+              },
+              child: Text(
+                'UPDATE IMAGE',
+                style: GoogleFonts.robotoCondensed(
+                    textStyle: const TextStyle(color: _constants.colorAccent)),
+              ),
+            ),
+          SizedBox(height: 2.h),
           Text(
             widget.doctor.firstName! + ' ' + widget.doctor.lastName!,
             textAlign: TextAlign.center,
@@ -111,142 +139,156 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 textStyle:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
           ),
-
-          ElevatedButton(
-              onPressed: () async {
-                if (!isEdit) {
+          AuthButton(
+              callBack: () async {
+                if (!_isEdit) {
                   setState(() {
-                    isEdit = true;
+                    _isEdit = true;
                   });
                 } else {
                   bool resp = await saveChanges();
-                  if(resp){
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Changes Saved')));
+                  if (resp) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Changes Saved')));
                     setState(() {
-                      isEdit = false;
+                      _isEdit = false;
                     });
                   }
                 }
               },
-              child: (isEdit)
-                  ? const Text('SAVE CHANGES')
-                  : const Text('EDIT PROFILE')),
-
+              buttonText:
+                  (_isEdit) ? _constants.saveText : _constants.editText),
           SizedBox(
             height: 1.h,
           ),
+          Observer(
+            builder: (BuildContext context) {
+              switch (_homeStore.state) {
+                case HomeStoreState.loading:
+                  return const LottieWidget(lottieType: 'loading');
+                case HomeStoreState.loaded:
+                  return buildDoctorsDetails();
+              }
+            },
+          )
+        ],
+      ),
+    );
+  }
 
-          Container(
-            width: 90.w,
-            height: 50.h,
-            padding: EdgeInsets.all(2.w),
-            decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(5)),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Text(
-                    'PERSONAL DETAILS',
-                    style: GoogleFonts.robotoCondensed(
-                        textStyle: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15)),
-                  ),
-                  const Divider(),
-                  TextInputField(
-                    controller: _firstNameCtrl,
-                    label: 'First Name',
-                    enabled: isEdit,
-                  ),
-                  TextInputField(
-                    controller: _lastNameCtrl,
-                    label: 'Last Name',
-                    enabled: isEdit,
-                  ),
-                  TextInputField(
-                    controller: _contactCtrl,
-                    label: 'Contact Number',
-                    enabled: false,
-                  ),
-                  SizedBox(
-                    height: 1.h,
-                  ),
-                  SizedBox(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Date of birth'),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 25.w,
-                              child: TextInputField(
-                                controller: _dayCtrl,
-                                label: 'Day',
-                                enabled: isEdit,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 25.w,
-                              child: TextInputField(
-                                controller: _monthCtrl,
-                                label: 'Month',
-                                enabled: isEdit,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 25.w,
-                              child: TextInputField(
-                                controller: _yearCtrl,
-                                label: 'Year',
-                                enabled: isEdit,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+  Widget buildDoctorsDetails() {
+    return Container(
+      padding: EdgeInsets.all(2.w),
+      decoration: BoxDecoration(
+          color: Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
+      child: Column(
+        children: [
+          Text(
+            _constants.personalText,
+            style: GoogleFonts.robotoCondensed(
+                textStyle:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+          ),
+          const Divider(),
+          TextInputField(
+            controller: _firstNameCtrl,
+            label: _constants.firstNameText,
+            type: TextInputType.text,
+            enabled: _isEdit,
+          ),
+          TextInputField(
+            controller: _lastNameCtrl,
+            label: _constants.lastNameText,
+            type: TextInputType.text,
+            enabled: _isEdit,
+          ),
+          TextInputField(
+            controller: _contactCtrl,
+            label: _constants.contactText,
+            type: TextInputType.number,
+            enabled: false,
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(_constants.dobText),
+                SizedBox(
+                  height: 1.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 25.w,
+                      child: TextInputField(
+                        controller: _dayCtrl,
+                        label: _constants.dayText,
+                        enabled: _isEdit,
+                        type: TextInputType.number,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 1.h,
-                  ),
-                  SizedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 25.w,
-                          child: TextInputField(
-                            controller: _bloodCtrl,
-                            label: 'Blood Group',
-                            enabled: isEdit,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 25.w,
-                          child: TextInputField(
-                            controller: _heightCtrl,
-                            label: 'Height',
-                            enabled: isEdit,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 25.w,
-                          child: TextInputField(
-                            controller: _weightCtrl,
-                            label: 'Weight',
-                            enabled: isEdit,
-                          ),
-                        ),
-                      ],
+                    SizedBox(
+                      width: 25.w,
+                      child: TextInputField(
+                        controller: _monthCtrl,
+                        label: _constants.monthText,
+                        enabled: _isEdit,
+                        type: TextInputType.number,
+                      ),
                     ),
-                  )
-                ],
-              ),
+                    SizedBox(
+                      width: 25.w,
+                      child: TextInputField(
+                        controller: _yearCtrl,
+                        label: _constants.yearText,
+                        enabled: _isEdit,
+                        type: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 25.w,
+                  child: TextInputField(
+                    controller: _bloodCtrl,
+                    label: _constants.bloodText,
+                    enabled: _isEdit,
+                    type: TextInputType.text,
+                  ),
+                ),
+                SizedBox(
+                  width: 25.w,
+                  child: TextInputField(
+                    controller: _heightCtrl,
+                    label: _constants.heightText,
+                    enabled: _isEdit,
+                    type: TextInputType.number,
+                  ),
+                ),
+                SizedBox(
+                  width: 25.w,
+                  child: TextInputField(
+                    controller: _weightCtrl,
+                    label: _constants.weightText,
+                    enabled: _isEdit,
+                    type: TextInputType.number,
+                  ),
+                ),
+              ],
             ),
           )
         ],
@@ -284,105 +326,5 @@ class _DetailsScreenState extends State<DetailsScreen> {
     }
 
     return await _homeStore.saveDoctor(widget.doctor);
-
-  }
-}
-
-class DoctorDetailsBG extends StatelessWidget {
-  const DoctorDetailsBG({
-    Key? key,
-    required this.imageLink,
-    required this.context,
-  }) : super(key: key);
-
-  final String imageLink;
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext ctxt) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        Column(
-          children: [
-            SizedBox(
-              width: 100.w,
-              height: 10.h,
-            ),
-            Container(
-              width: 100.w,
-              height: 90.h -
-                  MediaQuery.of(context).padding.top -
-                  AppBar().preferredSize.height,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Positioned(
-          top: 10.h - 15.w,
-          child: Container(
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 5)),
-            child: CircleAvatar(
-              radius: 15.w,
-              backgroundColor: Colors.black,
-              backgroundImage: NetworkImage(imageLink),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class TextInputField extends StatelessWidget {
-  const TextInputField({
-    Key? key,
-    required this.controller,
-    required this.label,
-    required this.enabled,
-  }) : super(key: key);
-
-  final TextEditingController controller;
-  final String label;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 1.h),
-      padding: EdgeInsets.only(left: 5.w, right: 5.w, top: 3.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: TextFormField(
-        controller: controller,
-        enabled: enabled,
-        keyboardType: TextInputType.text,
-        textInputAction: TextInputAction.done,
-        style: GoogleFonts.roboto(textStyle: const TextStyle(fontSize: 14)),
-        decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-            label: Text(label),
-            labelStyle:
-                GoogleFonts.roboto(textStyle: const TextStyle(fontSize: 12)),
-            filled: true,
-            contentPadding:
-                const EdgeInsets.only(left: 0.0, bottom: 0.0, top: 0.0),
-            fillColor: Colors.white),
-      ),
-    );
   }
 }

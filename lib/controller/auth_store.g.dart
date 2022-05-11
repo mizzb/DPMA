@@ -36,8 +36,8 @@ mixin _$AuthStore on AuthStoreBase, Store {
       AsyncAction('AuthStoreBase.login', context: context);
 
   @override
-  Future<String?> login(String contact) {
-    return _$loginAsyncAction.run(() => super.login(contact));
+  Future<String?> login(String contact, BuildContext context) {
+    return _$loginAsyncAction.run(() => super.login(contact, context));
   }
 
   late final _$verifyOtpAsyncAction =

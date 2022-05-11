@@ -49,19 +49,19 @@ mixin _$HomeStore on HomeStoreBase, Store {
     });
   }
 
-  late final _$_DBFlagAtom =
-      Atom(name: 'HomeStoreBase._DBFlag', context: context);
+  late final _$_dbFlagAtom =
+      Atom(name: 'HomeStoreBase._dbFlag', context: context);
 
   @override
-  ObservableFuture<bool> get _DBFlag {
-    _$_DBFlagAtom.reportRead();
-    return super._DBFlag;
+  ObservableFuture<bool> get _dbFlag {
+    _$_dbFlagAtom.reportRead();
+    return super._dbFlag;
   }
 
   @override
-  set _DBFlag(ObservableFuture<bool> value) {
-    _$_DBFlagAtom.reportWrite(value, super._DBFlag, () {
-      super._DBFlag = value;
+  set _dbFlag(ObservableFuture<bool> value) {
+    _$_dbFlagAtom.reportWrite(value, super._dbFlag, () {
+      super._dbFlag = value;
     });
   }
 

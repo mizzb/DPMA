@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../constants.dart' as _constants;
+
 class DoctorsList extends StatelessWidget {
   const DoctorsList({
     Key? key,
@@ -30,8 +32,7 @@ class DoctorsList extends StatelessWidget {
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Icon(Icons.arrow_forward_ios,
-                  color: Color.fromRGBO(47, 87, 159, 1)),
+              Icon(Icons.arrow_forward_ios, color: _constants.primaryColorDark),
             ],
           ),
           title: Text(doctor.firstName! + ' ' + doctor.lastName!,
@@ -39,7 +40,7 @@ class DoctorsList extends StatelessWidget {
                   fontSize: 15,
                   textStyle: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Color.fromRGBO(1, 94, 203, 1)))),
+                      color: _constants.primaryColor))),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,8 +53,8 @@ class DoctorsList extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.roboto(
                         fontSize: 12,
-                        textStyle: const TextStyle(
-                            color: Color.fromRGBO(1, 94, 203, 1)))),
+                        textStyle:
+                            const TextStyle(color: _constants.primaryColor))),
               ),
               Text(doctor.description!,
                   maxLines: 2,

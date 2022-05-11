@@ -8,6 +8,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:sizer/sizer.dart';
+import 'package:styled_text/styled_text.dart';
 
 import '../constants.dart' as _constants;
 
@@ -48,6 +49,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _otp1.dispose();
+    _otp2.dispose();
+    _otp3.dispose();
+    _otp4.dispose();
+    _otp5.dispose();
+    _otp6.dispose();
+
     _field1.dispose();
     _field2.dispose();
     _field3.dispose();
@@ -117,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         const FadeAnimation(
           delay: 0,
-          child: AuthHeader(header: 'ENTER YOUR MOBILE NUMBER'),
+          child: AuthHeader(header: _constants.mobileNumberText),
         ),
         SizedBox(height: 5.h),
         FadeAnimation(
@@ -187,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: const Icon(
                     Icons.close,
-                    color: Color.fromRGBO(250, 178, 6, 1),
+                    color: _constants.colorAccent,
                   ),
                 ),
               ),
@@ -198,10 +206,10 @@ class _LoginScreenState extends State<LoginScreen> {
         FadeAnimation(
           delay: 600,
           child: AuthButton(
-              buttonText: 'Login',
+              buttonText: _constants.loginText,
               callBack: () {
                 if (_loginCtrl.text.isNotEmpty && _contactNo != null) {
-                  _authStore.login(_contactNo!);
+                  _authStore.login(_contactNo!, context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Please enter valid number')));
@@ -213,11 +221,11 @@ class _LoginScreenState extends State<LoginScreen> {
           delay: 600,
           child: Center(
             child: Text(
-              'We will send you an SMS with the verification code to this number',
+              _constants.smsSendText,
               maxLines: 2,
               style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Color.fromRGBO(250, 178, 6, 1),
+                    color: _constants.colorAccent,
                     fontSize: 12,
                   )),
             ),
@@ -234,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           const FadeAnimation(
             delay: 0,
-            child: AuthHeader(header: 'ENTER VERIFICATION CODE'),
+            child: AuthHeader(header: _constants.otpVerifyText),
           ),
           SizedBox(height: 5.h),
           Row(
@@ -268,12 +276,11 @@ class _LoginScreenState extends State<LoginScreen> {
             delay: 600,
             child: Center(
               child: Text(
-                'Please enter the verification code that was sent to ' +
-                    _contactNo.toString(),
+                _constants.enterOTPText + _contactNo.toString(),
                 maxLines: 2,
                 style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
-                      color: Color.fromRGBO(250, 178, 6, 1),
+                      color: _constants.colorAccent,
                       fontSize: 12,
                     )),
               ),
@@ -283,41 +290,46 @@ class _LoginScreenState extends State<LoginScreen> {
           FadeAnimation(
             delay: 600,
             child: AuthButton(
-                buttonText: 'Continue',
+                buttonText: _constants.continueText,
                 callBack: () async {
                   if (_agree) {
-                    if (_otp1.text.isNotEmpty && _otp2.text.isNotEmpty &&
-                        _otp3.text.isNotEmpty && _otp4.text.isNotEmpty &&
-                        _otp5.text.isNotEmpty && _otp6.text.isNotEmpty){
+                    if (_otp1.text.isNotEmpty &&
+                        _otp2.text.isNotEmpty &&
+                        _otp3.text.isNotEmpty &&
+                        _otp4.text.isNotEmpty &&
+                        _otp5.text.isNotEmpty &&
+                        _otp6.text.isNotEmpty) {
                       String otp;
-                      otp = _otp1.text + _otp2.text + _otp3.text + _otp4.text + _otp5.text + _otp6.text;
+                      otp = _otp1.text +
+                          _otp2.text +
+                          _otp3.text +
+                          _otp4.text +
+                          _otp5.text +
+                          _otp6.text;
 
                       bool verified = await _authStore.verifyOtp(otp);
 
-                      if(verified) {
+                      if (verified) {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute<dynamic>(
-                              builder: (BuildContext context) => const HomeScreen(),
+                              builder: (BuildContext context) =>
+                              const HomeScreen(),
                             ),
-                            (route) => false);
-                      }else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content:
-                            Text("Login failed")));
+                                (route) => false);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Login failed")));
                       }
-
-                    }else {
+                    } else {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content:
-                          Text("Please enter valid OTP")));
+                          content: Text("Please enter valid OTP")));
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content:
                         Text("Please agree to the terms and condition")));
                   }
-
                 }),
           ),
           SizedBox(
@@ -338,8 +350,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
               ),
-              Text(
-                'I agree to the Terms Of Use and Privacy Policy',
+              StyledText(
+                text: 'I agree to the <color>Terms Of Use</color> and <color>Privacy Policy</color>',
+                tags: {
+                  'color': StyledTextTag(style: const TextStyle(color: _constants.colorAccent))
+                },
                 style: GoogleFonts.roboto(
                     textStyle: const TextStyle(color: Colors.white)),
               )
@@ -363,7 +378,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'GO BACK',
                 style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
-                      color: Color.fromRGBO(250, 178, 6, 1),
+                      color: _constants.colorAccent,
                       fontSize: 12,
                     )),
               ),

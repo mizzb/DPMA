@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 part 'auth_store.g.dart';
@@ -28,11 +30,12 @@ abstract class AuthStoreBase with Store {
   }
 
   @action
-  Future<String?> login(String contact) async {
+  Future<String?> login(String contact, BuildContext context) async {
     try {
       await _auth.verifyPhoneNumber(
         phoneNumber: contact,
         verificationCompleted: (PhoneAuthCredential credential) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter valid number")));
           if (kDebugMode) {
             print(credential.smsCode);
           }

@@ -3,6 +3,7 @@ import 'package:dpma/view/widgets/round_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
+import '../../constants.dart' as _constants;
 
 class DoctorsTile extends StatelessWidget {
   const DoctorsTile({
@@ -33,7 +34,7 @@ class DoctorsTile extends StatelessWidget {
                       textStyle: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(1, 94, 203, 1)))),
+                          color: _constants.primaryColorDark))),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 1.h),
                 child: Text(doctor.specialization!.toString().toUpperCase(),
@@ -42,7 +43,7 @@ class DoctorsTile extends StatelessWidget {
                     style: GoogleFonts.roboto(
                         fontSize: 12,
                         textStyle:
-                        const TextStyle(color: Color.fromRGBO(1, 94, 203, 1)))),
+                        const TextStyle(color: _constants.primaryColor))),
               ),
             ],
           ),

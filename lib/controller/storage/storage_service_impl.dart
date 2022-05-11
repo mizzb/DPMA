@@ -15,7 +15,7 @@ class StorageServiceImpl extends StorageService {
     resp.forEach((elem) {
       doctors.add(elem);
     });
-    doctors.sort((a,b) => a.rating!.compareTo(b.rating!));
+    doctors.sort((a,b) => a.rating!.compareTo(b.rating!)); /// Sorting based on rating  and saving to DB
     return doctors;
   }
 
@@ -39,8 +39,6 @@ class StorageServiceImpl extends StorageService {
       if (kDebugMode) {
         print(e);
       }
-      snackbarKey.currentState
-          ?.showSnackBar(const SnackBar(content: Text('Writing to DB failed')));
       return false;
     }
   }

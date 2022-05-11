@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-
+import '../../constants.dart' as _constants;
 class PlaceHolderImage extends StatelessWidget {
   const PlaceHolderImage({
     Key? key,
@@ -13,7 +13,7 @@ class PlaceHolderImage extends StatelessWidget {
         height: 10.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: const Color.fromRGBO(1, 94, 203, 1)),
+          border: Border.all(color: _constants.primaryColorDark),
         ),
         child: const CircularProgressIndicator());
   }

@@ -29,12 +29,12 @@ abstract class HomeStoreBase with Store {
       ObservableFuture(Future<List<Doctor>>(() => []));
 
   @observable
-  ObservableFuture<bool> _DBFlag = ObservableFuture(Future<bool>(() => false));
+  ObservableFuture<bool> _dbFlag = ObservableFuture(Future<bool>(() => false));
 
   @computed
   HomeStoreState get state {
     if (_doctors.status == FutureStatus.pending ||
-        _DBFlag.status == FutureStatus.pending) {
+        _dbFlag.status == FutureStatus.pending) {
       return HomeStoreState.loading;
     } else {
       return HomeStoreState.loaded;
@@ -52,9 +52,9 @@ abstract class HomeStoreBase with Store {
           () async => await _doctorsRepository.getDoctorsList()));
       doctorsList = await _doctors;
       if (doctorsList.isNotEmpty) {
-        _DBFlag = ObservableFuture(Future<bool>(
+        _dbFlag = ObservableFuture(Future<bool>(
             () async => await _storageService.saveData(doctorsList, false)));
-        dbStatus = await _DBFlag;
+        dbStatus = await _dbFlag;
         if (kDebugMode) {
           print('Write to db:' + dbStatus.toString());
         }
@@ -69,9 +69,10 @@ abstract class HomeStoreBase with Store {
 
   @action
   Future<bool> saveDoctor(Doctor doctor) async {
-    _DBFlag = ObservableFuture(Future<bool>(
+    _dbFlag = ObservableFuture(Future<bool>(
         () async => await _storageService.saveData(doctorsList, true)));
-    return await _DBFlag;
+    bool resp = await _dbFlag;
+    return resp;
   }
 
   getFromLocalStorage() async {

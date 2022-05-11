@@ -24,6 +24,8 @@ class LottieWidget extends StatelessWidget {
         return fetchLottie(context, 'assets/lottie/loading-data.json');
       case 'saving':
         return fetchLottie(context, 'assets/lottie/loading-data.json');
+      case 'empty':
+        return fetchLottie(context, 'assets/lottie/empty.json');
       default:
         return fetchLottie(context, 'assets/lottie/loading-data.json');
     }
