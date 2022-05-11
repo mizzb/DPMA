@@ -15,6 +15,7 @@ class StorageServiceImpl extends StorageService {
     resp.forEach((elem) {
       doctors.add(elem);
     });
+    doctors.sort((a,b) => a.rating!.compareTo(b.rating!));
     return doctors;
   }
 

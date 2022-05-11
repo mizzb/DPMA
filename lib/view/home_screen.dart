@@ -99,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (_homeStore.doctorsList.isEmpty) {
                       return const Text('No doctors available');
                     }
+
                     return (isGrid)
                         ? loadGrid(context, _homeStore.doctorsList)
                         : loadList(context, _homeStore.doctorsList);
@@ -147,4 +148,5 @@ class _HomeScreenState extends State<HomeScreen> {
               });
         });
   }
+
 }
