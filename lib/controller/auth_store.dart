@@ -41,6 +41,8 @@ abstract class AuthStoreBase with Store {
           }
         },
         verificationFailed: (FirebaseAuthException e) {
+          print(e.toString());
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Verification failed")));
           if (kDebugMode) {
             print(e.toString());
           }

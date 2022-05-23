@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.371738946834-ghi7o5h01top2294d90v0j86e4jmaiso</string>
+				<string>com.googleusercontent.apps.858490038683-36kv411fe7t68eeelh4ibnkrt85r6qpu</string>
 			</array>
 		</dict>
 	</array>
@@ -35,6 +35,12 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera for Updating Profile Picture</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Camera for Updating Profile Picture</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Gallery for Uploading Photos</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -54,12 +60,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-    <string>Camera for Updating Profile Picture</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Camera for Updating Profile Picture</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Gallery for Uploading Photos</string>
-
 </dict>
 </plist>

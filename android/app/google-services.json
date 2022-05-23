@@ -1,40 +1,41 @@
 {
   "project_info": {
-    "project_number": "371738946834",
-    "project_id": "dpma-bbb07",
-    "storage_bucket": "dpma-bbb07.appspot.com"
+    "project_number": "858490038683",
+    "project_id": "dpma-351113",
+    "storage_bucket": "dpma-351113.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:371738946834:android:3b7576ed15076d0170d7cb",
+        "mobilesdk_app_id": "1:858490038683:android:7ad560bd3faa3e1390993e",
         "android_client_info": {
-          "package_name": "com.dpma.app"
+          "package_name": "com.app.dpma"
         }
       },
       "oauth_client": [
         {
-          "client_id": "371738946834-j4gc5o2qh3mgt1e6rhfme5hfla40mubt.apps.googleusercontent.com",
+          "client_id": "858490038683-2dgq6gfqlfk8vrctluv3bft487srfqf8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCJ1lAK8PpYka1vBCQ8r1BV1_IgN82d5wk"
+          "current_key": "AIzaSyCe4MI_u9eWP7-VZpqyen8TKssho9kBxQM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "371738946834-j4gc5o2qh3mgt1e6rhfme5hfla40mubt.apps.googleusercontent.com",
+              "client_id": "858490038683-2dgq6gfqlfk8vrctluv3bft487srfqf8.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "371738946834-ghi7o5h01top2294d90v0j86e4jmaiso.apps.googleusercontent.com",
+              "client_id": "858490038683-36kv411fe7t68eeelh4ibnkrt85r6qpu.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.dpma.app"
+                "bundle_id": "com.dpma.app",
+                "app_store_id": "009"
               }
             }
           ]
