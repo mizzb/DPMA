@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -11,7 +10,7 @@ class AuthStore = AuthStoreBase with _$AuthStore;
 enum StoreState { login, otp }
 
 abstract class AuthStoreBase with Store {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   AuthStoreBase();
 
@@ -32,6 +31,7 @@ abstract class AuthStoreBase with Store {
   @action
   Future<String?> login(String contact, BuildContext context) async {
     try {
+
       await _auth.verifyPhoneNumber(
         phoneNumber: contact,
         verificationCompleted: (PhoneAuthCredential credential) {
@@ -41,7 +41,9 @@ abstract class AuthStoreBase with Store {
           }
         },
         verificationFailed: (FirebaseAuthException e) {
-          print(e.toString());
+          if (kDebugMode) {
+            print(e.toString());
+          }
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Verification failed")));
           if (kDebugMode) {
             print(e.toString());
@@ -77,6 +79,9 @@ abstract class AuthStoreBase with Store {
         verificationId: _verificationId!, smsCode: otp);
     try {
       UserCredential _resp = await _auth.signInWithCredential(credential);
+      if (kDebugMode) {
+        print(_resp);
+      }
       return true;
     } catch (e) {
       if (kDebugMode) {
